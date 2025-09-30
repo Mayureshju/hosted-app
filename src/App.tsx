@@ -11,6 +11,16 @@ interface AppData {
   color: string;
 }
 
+interface InstanceData {
+  id: string;
+  title: string;
+  url: string;
+  username: string;
+  password: string;
+  icon?: string;
+  color?: string;
+}
+
 const apps: AppData[] = [
   {
     id: 'customer',
@@ -32,15 +42,37 @@ const apps: AppData[] = [
     id: 'packer',
     name: 'Packer App',
     description: 'Efficient packing, inventory management, and order fulfillment',
-    downloadUrl: 'https://play.google.com/store/apps/packer-app-v1.5.2',
+    downloadUrl: 'https://drive.google.com/file/d/1IygXVrSizYgOfMTU4QutzF1Ded1BD6FO/view?usp=sharing',
     icon: '📦',
     color: 'from-orange-500 to-orange-600'
   }
 ];
 
+const instances: InstanceData[] = [
+  {
+    id: 'operation-staging',
+    title: 'Operation (Staging)',
+    url: 'https://operation-staging.dieture.com',
+    username: 'operation_manager@dieture.com',
+    password: 'operation@2025@',
+    icon: '⚙️',
+    color: 'from-indigo-500 to-indigo-600'
+  },
+  {
+    id: 'frappe-dev',
+    title: 'Frappe Dev',
+    url: 'https://frappe-dev.dieture.com',
+    username: 'administrator',
+    password: 'admin123',
+    icon: '🛠️',
+    color: 'from-teal-500 to-teal-600'
+  }
+];
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  // generalized copy state so we can show check icon for url/username/password independently
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
@@ -66,11 +98,11 @@ function App() {
     }
   };
 
-  const copyToClipboard = async (url: string, appId: string) => {
+  const copyToClipboard = async (text: string, fieldId: string) => {
     try {
-      await navigator.clipboard.writeText(url);
-      setCopiedUrl(appId);
-      setTimeout(() => setCopiedUrl(null), 2000);
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldId);
+      setTimeout(() => setCopiedField(null), 2000);
     } catch (err) {
       console.error('Failed to copy: ', err);
     }
@@ -88,7 +120,7 @@ function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Mobile Apps Hub
+                  Dieture Apps Hub
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Download our suite of mobile applications
@@ -116,11 +148,10 @@ function App() {
         <div className="container mx-auto text-center">
           <div className="animate-fade-in">
             <h2 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Get Our Apps
+              Dieture Apps & Instances
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
-              Download our powerful mobile applications designed for customers, drivers, and packers. 
-              Scan the QR codes or copy the download links below.
+              Download our mobile apps or connect to staging/dev instances. Scan the QR codes or copy the download links and credentials below.
             </p>
           </div>
         </div>
@@ -192,18 +223,18 @@ function App() {
                           className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                         <button
-                          onClick={() => copyToClipboard(app.downloadUrl, app.id)}
+                          onClick={() => copyToClipboard(app.downloadUrl, `${app.id}:url`)}
                           className="copy-button"
                           title="Copy to clipboard"
                         >
-                          {copiedUrl === app.id ? (
+                          {copiedField === `${app.id}:url` ? (
                             <Check className="w-4 h-4 text-green-500" />
                           ) : (
                             <Copy className="w-4 h-4" />
                           )}
                         </button>
                       </div>
-                      {copiedUrl === app.id && (
+                      {copiedField === `${app.id}:url` && (
                         <p className="text-sm text-green-500 mt-1 animate-fade-in">
                           Copied to clipboard!
                         </p>
@@ -226,7 +257,7 @@ function App() {
             </div>
           </div>
 
-          {/* Desktop Grid Layout */}
+          {/* Desktop Grid Layout for Apps */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {apps.map((app, index) => (
               <div
@@ -270,18 +301,18 @@ function App() {
                       className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs lg:text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <button
-                      onClick={() => copyToClipboard(app.downloadUrl, app.id)}
+                      onClick={() => copyToClipboard(app.downloadUrl, `${app.id}:url`)}
                       className="copy-button"
                       title="Copy to clipboard"
                     >
-                      {copiedUrl === app.id ? (
+                      {copiedField === `${app.id}:url` ? (
                         <Check className="w-4 h-4 text-green-500" />
                       ) : (
                         <Copy className="w-4 h-4" />
                       )}
                     </button>
                   </div>
-                  {copiedUrl === app.id && (
+                  {copiedField === `${app.id}:url` && (
                     <p className="text-sm text-green-500 mt-1 animate-fade-in">
                       Copied to clipboard!
                     </p>
@@ -301,6 +332,76 @@ function App() {
               </div>
             ))}
           </div>
+
+          {/* Instances section (Operation / Frappe) */}
+          <div className="mt-12">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Instances</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              {instances.map((inst) => (
+                <div key={inst.id} className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow-md">
+                  <div className="text-center mb-4">
+                    <div className={`w-14 h-14 mx-auto mb-3 rounded-lg bg-gradient-to-r ${inst.color || 'from-gray-400 to-gray-500'} flex items-center justify-center text-xl`}>
+                      <span>{inst.icon ?? '🔗'}</span>
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{inst.title}</h4>
+                  </div>
+
+                  {/* QR */}
+                 
+
+                  {/* URL */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">URL</label>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <input type="text" readOnly value={inst.url}
+                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
+                      <button onClick={() => copyToClipboard(inst.url, `${inst.id}:url`)} title="Copy URL" className="p-2 rounded-md">
+                        {copiedField === `${inst.id}:url` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Username */}
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <input type="text" readOnly value={inst.username}
+                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
+                      <button onClick={() => copyToClipboard(inst.username, `${inst.id}:username`)} title="Copy username" className="p-2 rounded-md">
+                        {copiedField === `${inst.id}:username` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Password */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <input type="text" readOnly value={inst.password}
+                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
+                      <button onClick={() => copyToClipboard(inst.password, `${inst.id}:password`)} title="Copy password" className="p-2 rounded-md">
+                        {copiedField === `${inst.id}:password` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-2">
+                    <a href={inst.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 text-center rounded-md bg-blue-600 text-white hover:opacity-95">
+                      Open
+                    </a>
+                    <button onClick={() => {
+                      // populate clipboard with a convenient copy-paste block (URL + credentials)
+                      const block = `URL: ${inst.url}\nUsername: ${inst.username}\nPassword: ${inst.password}`;
+                      copyToClipboard(block, `${inst.id}:full`);
+                    }} className="py-2 px-3 rounded-md bg-gray-100 dark:bg-gray-700">
+                      {copiedField === `${inst.id}:full` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -311,7 +412,7 @@ function App() {
             © 2025 Mobile Apps Hub. All rights reserved.
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-            Scan QR codes with your mobile device camera or copy the download links above.
+            Scan QR codes with your mobile device camera or copy the download links and credentials above.
           </p>
         </div>
       </footer>
