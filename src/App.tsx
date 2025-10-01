@@ -157,9 +157,82 @@ function App() {
         </div>
       </section>
 
+      {/* Instances section (Operation / Frappe) */}
+      <section className="pb-12 px-4">
+        <div className="container mx-auto">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Instances</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {instances.map((inst) => (
+              <div key={inst.id} className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow-md">
+                <div className="text-center mb-4">
+                  <div className={`w-14 h-14 mx-auto mb-3 rounded-lg bg-gradient-to-r ${inst.color || 'from-gray-400 to-gray-500'} flex items-center justify-center text-xl`}>
+                    <span>{inst.icon ?? '🔗'}</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{inst.title}</h4>
+                </div>
+
+                {/* QR */}
+               
+
+                {/* URL */}
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">URL</label>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <input type="text" readOnly value={inst.url}
+                      className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
+                    <button onClick={() => copyToClipboard(inst.url, `${inst.id}:url`)} title="Copy URL" className="p-2 rounded-md">
+                      {copiedField === `${inst.id}:url` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Username */}
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <input type="text" readOnly value={inst.username}
+                      className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
+                    <button onClick={() => copyToClipboard(inst.username, `${inst.id}:username`)} title="Copy username" className="p-2 rounded-md">
+                      {copiedField === `${inst.id}:username` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Password */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <input type="text" readOnly value={inst.password}
+                      className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
+                    <button onClick={() => copyToClipboard(inst.password, `${inst.id}:password`)} title="Copy password" className="p-2 rounded-md">
+                      {copiedField === `${inst.id}:password` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex space-x-2">
+                  <a href={inst.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 text-center rounded-md bg-blue-600 text-white hover:opacity-95">
+                    Open
+                  </a>
+                  <button onClick={() => {
+                    // populate clipboard with a convenient copy-paste block (URL + credentials)
+                    const block = `URL: ${inst.url}\nUsername: ${inst.username}\nPassword: ${inst.password}`;
+                    copyToClipboard(block, `${inst.id}:full`);
+                  }} className="py-2 px-3 rounded-md bg-gray-100 dark:bg-gray-700">
+                    {copiedField === `${inst.id}:full` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Apps Grid */}
       <section className="pb-20 px-4">
         <div className="container mx-auto">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Mobile Apps</h3>
+          
           {/* Mobile Tab Navigation */}
           <div className="md:hidden mb-8">
             <div className="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1 max-w-md mx-auto">
@@ -331,75 +404,6 @@ function App() {
                 </a>
               </div>
             ))}
-          </div>
-
-          {/* Instances section (Operation / Frappe) */}
-          <div className="mt-12">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Instances</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              {instances.map((inst) => (
-                <div key={inst.id} className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow-md">
-                  <div className="text-center mb-4">
-                    <div className={`w-14 h-14 mx-auto mb-3 rounded-lg bg-gradient-to-r ${inst.color || 'from-gray-400 to-gray-500'} flex items-center justify-center text-xl`}>
-                      <span>{inst.icon ?? '🔗'}</span>
-                    </div>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">{inst.title}</h4>
-                  </div>
-
-                  {/* QR */}
-                 
-
-                  {/* URL */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">URL</label>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <input type="text" readOnly value={inst.url}
-                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
-                      <button onClick={() => copyToClipboard(inst.url, `${inst.id}:url`)} title="Copy URL" className="p-2 rounded-md">
-                        {copiedField === `${inst.id}:url` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Username */}
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <input type="text" readOnly value={inst.username}
-                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
-                      <button onClick={() => copyToClipboard(inst.username, `${inst.id}:username`)} title="Copy username" className="p-2 rounded-md">
-                        {copiedField === `${inst.id}:username` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Password */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <input type="text" readOnly value={inst.password}
-                        className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-xs text-gray-700 dark:text-gray-300" />
-                      <button onClick={() => copyToClipboard(inst.password, `${inst.id}:password`)} title="Copy password" className="p-2 rounded-md">
-                        {copiedField === `${inst.id}:password` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex space-x-2">
-                    <a href={inst.url} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 text-center rounded-md bg-blue-600 text-white hover:opacity-95">
-                      Open
-                    </a>
-                    <button onClick={() => {
-                      // populate clipboard with a convenient copy-paste block (URL + credentials)
-                      const block = `URL: ${inst.url}\nUsername: ${inst.username}\nPassword: ${inst.password}`;
-                      copyToClipboard(block, `${inst.id}:full`);
-                    }} className="py-2 px-3 rounded-md bg-gray-100 dark:bg-gray-700">
-                      {copiedField === `${inst.id}:full` ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
         </div>
