@@ -26,7 +26,7 @@ const apps: AppData[] = [
     id: 'customer',
     name: 'Customer App',
     description: 'Browse, order, and track your deliveries with ease',
-    downloadUrl: 'https://drive.google.com/file/d/1CjUL7xKIqJLywQ1LVMZRYRoK8wDU64d6/view?usp=drive_link',
+    downloadUrl: 'https://drive.google.com/file/d/1b4BvSISOFekcKn7x8OIyxU6lzXhJj9D0/view',
     icon: '👥',
     color: 'from-blue-500 to-blue-600'
   },
@@ -42,7 +42,7 @@ const apps: AppData[] = [
     id: 'packer',
     name: 'Packer App',
     description: 'Efficient packing, inventory management, and order fulfillment',
-    downloadUrl: 'https://drive.google.com/file/d/1IygXVrSizYgOfMTU4QutzF1Ded1BD6FO/view?usp=sharing',
+    downloadUrl: 'https://drive.google.com/file/d/1KqRCPAgt96mWDeZnSNvd5PxQy5QdLYnT/view?usp=sharing',
     icon: '📦',
     color: 'from-orange-500 to-orange-600'
   }
